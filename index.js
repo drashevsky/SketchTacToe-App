@@ -1,7 +1,9 @@
+// Basic game options, 2nd player assumed to be computer, players/gamemodes must correspond with image names below
 const players = ['x', 'o'];
 const boardSizes = [3, 4, 5];
 const gameModes = ['multiplayer', 'singleplayer'];
 
+// Initial game state: board is kept track of as single boardSize * boardSize length array
 const gameConfig = {
     'board': new Array(boardSizes[0] * boardSizes[0]),
     'currplayer': players[0],
@@ -10,6 +12,8 @@ const gameConfig = {
     'gameover': false,
     'gametie': false,
 }
+
+// Configure UI / images to load
 const boardConfig = {
     3: 'grid-template-columns: repeat(3, 1fr); grid-template-rows: 0.9fr 0.9fr 1fr;',
     4: 'grid-template-columns: 0.85fr repeat(3, 1fr); grid-template-rows: repeat(3, 1fr) 0.95fr;',
@@ -26,6 +30,7 @@ const imageConfig = {
     'singleplayer': ['singleplayer.svg', 'Single Player', '', 'gameModeImages'], 
 }
 
+// Game and UI state
 let state = null;
 let ui = {
     'spaceImages': {},
@@ -48,6 +53,7 @@ let ui = {
 
 // Game methods
 
+// Initializes or resets game state
 function resetGameState() {
     if (!state) {
         state = JSON.parse(JSON.stringify(gameConfig));
@@ -59,6 +65,7 @@ function resetGameState() {
     }
 }
 
+// Updates game state with new move, checks for win or tie
 function updateBoardState(index) {
     if (!state.board[index]) {
         state.board[index] = state.currplayer;
@@ -71,22 +78,31 @@ function updateBoardState(index) {
     }
 }
 
+// Algorithm for computerized player, returns computer's choice of move.
+// Algorithm selects a "line" (row, column, or diagonal) based on
+// its programming, and then finds a free space within that line
 function computerMove() {
     let boardSize = state.boardSize;
     let analysis = computerAnalyzeBoard();
+
+    // If no selection is made below, default to random space on board
     let line = Math.random() * (2 * boardSize + 2) >> 0;
 
-    // Remove filled lines (rows, columns, or diagonals) from selection
-
+    // Remove lines with no free spaces (rows, columns, or diagonals) from selection
     let temp = analysis[0].map((count, index) => (analysis[1][index] + count == boardSize) ? -1 : count);
     analysis[1] = analysis[1].map((count, index) => (analysis[0][index] + count == boardSize) ? -1 : count);
     analysis[0] = temp;
 
-    // Choose line with e.g. 3, 2, or 1 filled spaces on a 4-grid
-
+    // Choose line with, in descending order: 3, 2, or 1 filled spaces on a 4-grid.
     for (let i = boardSize - 1; i > 0; i--) {
+
+        //Find all lines with i filled spaces
         let comp = analysis[1].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
         let player = analysis[0].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
+
+        //If player is about to win, block his move (alter probability to change this)
+        //Otherwise, attempt to build own line
+        //Otherwise, interfrere with player
 
         if (i == boardSize - 1 && player.length > 0) {
             line = player[Math.random() * player.length >> 0];
@@ -103,7 +119,7 @@ function computerMove() {
         }
     }
 
-    // Find first available index on line
+    // Find first available space on line
 
     for (let i = 0; i < boardSize; i++) {
         let index;
@@ -124,11 +140,14 @@ function computerMove() {
     }
 }
 
+// Get counts of how many player and computer marks there are in every row, column, and diagonal
 function computerAnalyzeBoard() {
     let boardSize = state.boardSize;
     let playerCounts = Array(2 * boardSize + 2).fill(0);
     let compCounts = Array(2 * boardSize + 2).fill(0);
 
+    // Counts space as filling either row, column, first diagonal \, or second diagonal /
+    // for either player or computer 
     let addToCounts = (counts, i, j, boardSize) => {
         counts[i] += 1;
         counts[j + boardSize] += 1;
@@ -151,6 +170,7 @@ function computerAnalyzeBoard() {
     return [playerCounts, compCounts];
 }
 
+// Check row, column, first diagonal \, and second diagonal / for a win
 function checkWin(index) {
     let boardSize = state.boardSize;
     let rowIndex = index / boardSize >> 0;
@@ -174,6 +194,7 @@ function checkWin(index) {
     state.gameover = wins[0] || wins[1] || wins[2] || wins[3];
 }
 
+// Checks for a tie: if board is completely filled
 function checkTie() {
     for (let i = 0; i < state.board.length; i++) {
         if (!state.board[i]) {
@@ -185,8 +206,9 @@ function checkTie() {
 }
 
 
-// Hooks
+// Hooks: methods to update state with UI changes
 
+// Handle initialization, end of game, or reset button press
 function handleReset() {
     resetGameState();
     toggleGridChanger(true);
@@ -195,17 +217,8 @@ function handleReset() {
     renderMessage('Game start. ' + state.currplayer + '\'s turn');
 }
 
-function handleGameEnd() {
-    if (state.gameover) {
-        ui.overlay.className = 'hide-shade';
-        renderMessage(state.currplayer + ' won!');
-    } else if (state.gametie) {
-        renderMessage('It\'s a tie!');
-    } else {
-        renderMessage(state.currplayer + '\'s turn'); 
-    }
-}
-
+// Handle board space getting clicked. Update board graphics and change game state if space is empty and there's no win/tie
+// Can trigger blocking of control bar due to game start
 function handleMark(index) {
     toggleGridChanger(false);
     toggleGameModeButton(false);
@@ -221,10 +234,11 @@ function handleMark(index) {
             }
         }
 
-        handleGameEnd();
+        handleRoundEnd();
     }
 }
 
+// Update board with computer's move
 function handleComputerMark() {
     if (state.mode == gameModes[1]) {
         let computerChoice = computerMove();
@@ -232,6 +246,19 @@ function handleComputerMark() {
     }
 }
 
+// Display specific method when round ends
+function handleRoundEnd() {
+    if (state.gameover) {
+        ui.overlay.className = 'hide-shade';
+        renderMessage(state.currplayer + ' won!');
+    } else if (state.gametie) {
+        renderMessage('It\'s a tie!');
+    } else {
+        renderMessage(state.currplayer + '\'s turn'); 
+    }
+}
+
+// Update UI and controls when grid size is changed by user
 function handleGridSizeChange(direction) {
     state.boardSize = boardSizes[boardSizes.indexOf(state.boardSize) + ((direction) ? -1 : 1)];
     ui.gridSizeLabel.innerHTML = state.boardSize + '-grid';
@@ -240,6 +267,7 @@ function handleGridSizeChange(direction) {
     handleReset();
 }
 
+// Update UI and controls when game mode is changed by user
 function handleGameModeChange(mode) {
     if (mode) {
         state.mode = mode;
@@ -297,6 +325,7 @@ function renderSpace(index) {
     ui.spaceElementsChildren.push(images);
 }
 
+// Load all control bar elements and setup their click handlers
 function renderControlBar() {
     ui.resetButton = document.getElementById('reset');
     ui.smallerGridButton = document.getElementById('smaller-grid');
@@ -311,6 +340,7 @@ function renderControlBar() {
     ui.gameModeButton.addEventListener('click', () => handleGameModeChange());
 }
 
+// Push message to message bar
 function renderMessage(message) {
     if (!ui.messageBar) {
         ui.messageBar = document.getElementById('message-bar');
@@ -318,6 +348,7 @@ function renderMessage(message) {
     ui.messageBar.innerHTML = message;
 }
 
+// Load all images in image configuration into UI state
 function loadImages(imageDict) {
     ui.spaceImages = {};
     ui.boardImages = {};
@@ -331,18 +362,21 @@ function loadImages(imageDict) {
     }
 }
 
+// Disable grid change control during gameplay
 function toggleGridChanger(enabled) {
     ui.gridChangerEnabled = enabled;
     ui.gridChanger.style.opacity = (ui.gridChangerEnabled) ? '1.0' : '0.5';
     ui.gridChanger.style.pointerEvents = (ui.gridChangerEnabled) ? 'auto' : 'none';
 }
 
+// Disable game mode control during gameplay
 function toggleGameModeButton(enabled) {
     ui.gameModeButton.disabled = !enabled;
     ui.gameModeButton.style.opacity = (enabled) ? 1.0 : 0.5;
 }
 
 
+// Load images, render controls and start game
 window.onload = () => {
     loadImages(imageConfig);
     renderControlBar();

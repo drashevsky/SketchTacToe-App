@@ -1,3 +1,5 @@
+/* Page setup */
+
 html {
     width: 100%;
     height: 100%;
@@ -27,6 +29,9 @@ body p {
     margin: 20px 0 auto 0;
     font-size: 3.5rem;
 }
+
+
+/* Tic-tac-toe board*/
 
 #board {
     height: 50%;
@@ -83,6 +88,9 @@ body p {
     visibility: hidden;
 }
 
+
+/* Messages and controls */
+
 #message-bar {
     font-size: 2rem;
     margin: 20px 0 0 0;
@@ -125,6 +133,9 @@ body p {
     transform: rotate(-360deg);
     transition: 0.5s;
 }
+
+
+/* Footer */
 
 #footer {
     justify-self: flex-end;
