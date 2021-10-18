@@ -76,16 +76,30 @@ function computerMove() {
     let analysis = computerAnalyzeBoard();
     let line = Math.random() * (2 * boardSize + 2) >> 0;
 
-    // Choose line
+    // Remove filled lines (rows, columns, or diagonals) from selection
+
+    let temp = analysis[0].map((count, index) => (analysis[1][index] + count == boardSize) ? -1 : count);
+    analysis[1] = analysis[1].map((count, index) => (analysis[0][index] + count == boardSize) ? -1 : count);
+    analysis[0] = temp;
+
+    // Choose line with e.g. 3, 2, or 1 filled spaces on a 4-grid
 
     for (let i = boardSize - 1; i > 0; i--) {
-        let comp = analysis[1].some((count, index) => {if (count == i) return index});
-        let player = analysis[0].some((count, index) => {if (count == i) return index});
-        
-        if (comp.length > 0) {
+        let comp = analysis[1].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
+        let player = analysis[0].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
+
+        if (i == boardSize - 1 && player.length > 0) {
+            line = player[Math.random() * player.length >> 0];
+            break;
+            
+        } else if (comp.length > 0) {
             line = comp[Math.random() * comp.length >> 0];
+            break;
+
         } else if (player.length > 0) {
             line = player[Math.random() * player.length >> 0];
+            break;
+
         }
     }
 
@@ -105,8 +119,7 @@ function computerMove() {
         }
 
         if (!state.board[index]) {
-            console.log(index);
-            return;
+            return index;
         }
     }
 }
