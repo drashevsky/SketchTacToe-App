@@ -1,0 +1,22 @@
+function renderWinningLine() {
+    let canvas = document.createElement('canvas');
+    canvas.id = 'winning-line';
+    let ctx = canvas.getContext('2d');
+    ctx.canvas.width = ctx.canvas.height = state.boardSize * 100;
+    ctx.strokeStyle = ctx.fillStyle = 'rgb(255, 0, 0, 1)';
+    ctx.globalAlpha = 1.0;
+    
+    for (let i = 0; i < 5; i++) {
+        ctx.moveTo(...state.winningLine.slice(0, 2));
+        ctx.bezierCurveTo(...state.winningLine.slice(2));
+        ctx.stroke();
+    }
+    ui.board.appendChild(canvas);
+}
+
+#winning-line {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+}
