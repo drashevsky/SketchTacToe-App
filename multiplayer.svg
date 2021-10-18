@@ -1,0 +1,11 @@
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+ <title>2-player</title>
+
+ <g>
+  <title>Layer 1</title>
+  <ellipse stroke-width="3" ry="62" rx="22" id="svg_1" cy="115.39999" cx="34" stroke="#000" fill="#fff"/>
+  <ellipse stroke-width="3" ry="62" rx="22" id="svg_2" cy="114.39999" cx="91" stroke="#000" fill="#fff"/>
+  <ellipse ry="15.24999" rx="15.37499" id="svg_3" cy="31.24993" cx="34.87502" stroke-width="3" stroke="#000" fill="#fff"/>
+  <ellipse ry="15.24999" rx="15.37499" id="svg_4" cy="31.49993" cx="91.12498" stroke-width="3" stroke="#000" fill="#fff"/>
+ </g>
+</svg>
