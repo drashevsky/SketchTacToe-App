@@ -68,9 +68,6 @@ function updateBoardState(index) {
         if (!state.gameover && !state.gametie) {
             state.currplayer = (state.currplayer == players[0]) ? players[1] : players[0];  
         }
-
-        //if singleplayer.......state.currplayer = flip
-        computerMove();
     }
 }
 
@@ -213,6 +210,13 @@ function handleMark(index) {
     }
 }
 
+function handleComputerMark() {
+    if (state.mode == gameModes[1]) {
+        let computerChoice = computerMove();
+        handleMark(computerChoice);
+    }
+}
+
 function handleGridSizeChange(direction) {
     state.boardSize = boardSizes[boardSizes.indexOf(state.boardSize) + ((direction) ? -1 : 1)];
     ui.gridSizeLabel.innerHTML = state.boardSize + '-grid';
@@ -260,7 +264,10 @@ function renderSpace(index) {
     // Render space
     let space = document.createElement('div');
     space.className = 'space';
-    space.addEventListener('click', () => handleMark(index));
+    space.addEventListener('click', () => {
+        handleMark(index)
+        handleComputerMark();
+    });
     ui.overlay.appendChild(space);
 
     // Attach images to space
