@@ -91,7 +91,7 @@ function computerMove() {
         if (i == boardSize - 1 && player.length > 0) {
             line = player[Math.random() * player.length >> 0];
             break;
-            
+
         } else if (comp.length > 0) {
             line = comp[Math.random() * comp.length >> 0];
             break;
@@ -190,6 +190,7 @@ function checkTie() {
 function handleReset() {
     resetGameState();
     toggleGridChanger(true);
+    toggleGameModeButton(true);
     renderBoard(state.boardSize);
     renderMessage('Game start. ' + state.currplayer + '\'s turn');
 }
@@ -207,6 +208,7 @@ function handleGameEnd() {
 
 function handleMark(index) {
     toggleGridChanger(false);
+    toggleGameModeButton(false);
 
     if (!state.board[index] && !state.gameover && !state.gametie) {
         updateBoardState(index);
@@ -333,6 +335,11 @@ function toggleGridChanger(enabled) {
     ui.gridChangerEnabled = enabled;
     ui.gridChanger.style.opacity = (ui.gridChangerEnabled) ? '1.0' : '0.5';
     ui.gridChanger.style.pointerEvents = (ui.gridChangerEnabled) ? 'auto' : 'none';
+}
+
+function toggleGameModeButton(enabled) {
+    ui.gameModeButton.disabled = !enabled;
+    ui.gameModeButton.style.opacity = (enabled) ? 1.0 : 0.5;
 }
 
 
