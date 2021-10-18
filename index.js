@@ -45,6 +45,7 @@ let ui = {
     'messageBar': null,
 }
 
+
 // Game methods
 
 function resetGameState() {
@@ -76,7 +77,9 @@ function updateBoardState(index) {
 function computerMove() {
     let boardSize = state.boardSize;
     let analysis = computerAnalyzeBoard();
-    let line = Math.random() * (boardSize * 2 + 2) >> 0;
+    let line = Math.random() * (2 * boardSize + 2) >> 0;
+
+    // Choose line
 
     for (let i = boardSize - 1; i > 0; i--) {
         let comp = analysis[1].some((count, index) => {if (count == i) return index});
@@ -89,13 +92,32 @@ function computerMove() {
         }
     }
 
-    console.log(line);
+    // Find first available index on line
+
+    for (let i = 0; i < boardSize; i++) {
+        let index;
+
+        if (line == 2 * boardSize + 1) {
+            index = (boardSize - 1 - i) * boardSize + i;
+        } else if (line == 2 * boardSize) {
+            index = i * boardSize + i;
+        } else if (line >= boardSize) { 
+            index = i * boardSize + (line - boardSize);
+        } else {
+            index = line * boardSize + i;
+        }
+
+        if (!state.board[index]) {
+            console.log(index);
+            return;
+        }
+    }
 }
 
 function computerAnalyzeBoard() {
     let boardSize = state.boardSize;
-    let playerCounts = Array(boardSize * 2 + 2).fill(0);
-    let compCounts = Array(boardSize * 2 + 2).fill(0);
+    let playerCounts = Array(2 * boardSize + 2).fill(0);
+    let compCounts = Array(2 * boardSize + 2).fill(0);
 
     let addToCounts = (counts, i, j, boardSize) => {
         counts[i] += 1;
@@ -118,8 +140,6 @@ function computerAnalyzeBoard() {
 
     return [playerCounts, compCounts];
 }
-
-
 
 function checkWin(index) {
     let boardSize = state.boardSize;
