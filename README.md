@@ -1,2 +1,2 @@
-# TicTacToe-App
-My vanilla JS implementation of tic-tac-toe with doodle graphics and a "stupid" AI
+# SketchTacToe-App
+My vanilla JavaScript implementation of tic-tac-toe with doodle graphics and a computerized opponent algorithm 
