@@ -2,6 +2,7 @@
 const players = ['x', 'o'];
 const boardSizes = [3, 4, 5];
 const gameModes = ['multiplayer', 'singleplayer'];
+const blockProb = 0.5;
 
 // Initial game state: board is kept track of as single boardSize * boardSize length array
 const gameConfig = {
@@ -100,11 +101,11 @@ function computerMove() {
         let comp = analysis[1].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
         let player = analysis[0].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
 
-        //If player is about to win, block his move (alter probability to change this)
+        //If player is about to win, block his move (alter probability to change how often this happens)
         //Otherwise, attempt to build own line
         //Otherwise, interfrere with player
 
-        if (i == boardSize - 1 && player.length > 0) {
+        if (i == boardSize - 1 && player.length > 0 && Math.random() > blockProb) {
             line = player[Math.random() * player.length >> 0];
             break;
 
