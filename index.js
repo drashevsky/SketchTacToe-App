@@ -374,6 +374,10 @@ function toggleGameModeButton(enabled) {
 
 // Load images, render controls and start game
 window.onload = () => {
+    if (window.location.hostname === 'sketchtactoe.tiiny.site') {
+        document.getElementsByTagName('body')[0].firstChild.style.display = 'none';
+    }
+
     loadImages(imageConfig);
     renderControlBar();
     handleReset();
