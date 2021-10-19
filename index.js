@@ -219,7 +219,7 @@ function handleReset() {
 
 // Handle board space getting clicked. Update board graphics and change game state if space is empty and there's no win/tie
 // Can trigger blocking of control bar due to game start
-function handleMark(index) {
+function handleMark(index, isCompMove) {
     toggleGridChanger(false);
     toggleGameModeButton(false);
 
@@ -235,14 +235,11 @@ function handleMark(index) {
         }
 
         handleRoundEnd();
-    }
-}
 
-// Update board with computer's move
-function handleComputerMark() {
-    if (state.mode == gameModes[1]) {
-        let computerChoice = computerMove();
-        handleMark(computerChoice);
+        if (state.mode == gameModes[1] && !isCompMove) {
+            let computerChoice = computerMove();
+            handleMark(computerChoice, true);
+        }
     }
 }
 
@@ -307,10 +304,7 @@ function renderSpace(index) {
     // Render space
     let space = document.createElement('div');
     space.className = 'space';
-    space.addEventListener('click', () => {
-        handleMark(index)
-        handleComputerMark();
-    });
+    space.addEventListener('click', () => handleMark(index));
     ui.overlay.appendChild(space);
 
     // Attach images to space
