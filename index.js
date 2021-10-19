@@ -103,7 +103,7 @@ function computerMove() {
 
         //If player is about to win, block his move (alter probability to change how often this happens)
         //Otherwise, attempt to build own line
-        //Otherwise, interfrere with player
+        //Otherwise, if player is not about to win, block his move
 
         if (i == boardSize - 1 && player.length > 0 && Math.random() < blockProb) {
             line = player[Math.random() * player.length >> 0];
@@ -113,7 +113,7 @@ function computerMove() {
             line = comp[Math.random() * comp.length >> 0];
             break;
 
-        } else if (player.length > 0) {
+        } else if (i != boardSize - 1 && player.length > 0) {
             line = player[Math.random() * player.length >> 0];
             break;
 
