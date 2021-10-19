@@ -2,7 +2,7 @@
 const players = ['x', 'o'];
 const boardSizes = [3, 4, 5];
 const gameModes = ['multiplayer', 'singleplayer'];
-const blockProbabilities = [1, 0.5, 0.25];
+const blockProbabilities = [1, 0.5, 0.5];
 
 // Initial game state: board is kept track of as single boardSize * boardSize length array
 const gameConfig = {
