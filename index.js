@@ -105,7 +105,7 @@ function computerMove() {
         //Otherwise, attempt to build own line
         //Otherwise, interfrere with player
 
-        if (i == boardSize - 1 && player.length > 0 && Math.random() > blockProb) {
+        if (i == boardSize - 1 && player.length > 0 && Math.random() < blockProb) {
             line = player[Math.random() * player.length >> 0];
             break;
 
