@@ -2,7 +2,7 @@
 const players = ['x', 'o'];
 const boardSizes = [3, 4, 5];
 const gameModes = ['multiplayer', 'singleplayer'];
-const blockProb = 0.5;
+const blockProbabilities = [1, 0.5, 0.25];
 
 // Initial game state: board is kept track of as single boardSize * boardSize length array
 const gameConfig = {
@@ -85,6 +85,7 @@ function updateBoardState(index) {
 function computerMove() {
     let boardSize = state.boardSize;
     let analysis = computerAnalyzeBoard();
+    let blockProb = blockProbabilities[boardSizes.indexOf(boardSize)];
 
     // If no selection is made below, default to random space on board
     let line = Math.random() * (2 * boardSize + 2) >> 0;
@@ -101,7 +102,7 @@ function computerMove() {
         let comp = analysis[1].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
         let player = analysis[0].map((count, index) => (count == i) ? index : -1).filter(index => index >= 0);
 
-        //If player is about to win, block his move (alter probability to change how often this happens)
+        //If player is about to win, block his move (alter blockProbabilities to change how often this happens for a given board size)
         //Otherwise, attempt to build own line
         //Otherwise, if player is not about to win, block his move
 
