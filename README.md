@@ -1,4 +1,7 @@
 # SketchTacToe-App
+
+![Tic-Tac-Toe Screenshot](game_screenshot.jpg)
+
 SketchTacToe is a responsive vanilla JavaScript implementation of tic-tac-toe with doodle graphics and a computerized opponent algorithm that I built in 2 days. The game is organized around an MVC pattern, with pure HTML elements being updated by render functions as state changes.
 
 # How to Run
